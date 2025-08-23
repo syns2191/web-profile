@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { config } from '@/config/app.config';
 
 interface ChatMessage {
   text: string;
@@ -28,9 +29,6 @@ export function Chats(props: TPropChat) {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([
     { text: 'Hello! How can I help you today?', sender: 'sutralia' },
-    // { id: 2, text: 'Hi Sutralia, I&apos;m interested in your work.', sender: 'user' },
-    // { id: 3, text: 'Great! What specifically caught your eye?', sender: 'sutralia' },
-    // { id: 4, text: 'Your project on scalable e-commerce platforms.', sender: 'user' },
   ]);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -44,7 +42,7 @@ export function Chats(props: TPropChat) {
   useEffect(() => {
     if (isChatOpen && !socket) {
       // Connect to Socket.IO server
-      socket = io('http://localhost:3034'); // Replace with your Socket.IO server URL
+      socket = io(config.NEXT_PUBLIC_API_URL); // Replace with your Socket.IO server URL
 
       const storedId = localStorage.getItem("conversationId");
 

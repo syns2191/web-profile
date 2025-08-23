@@ -15,7 +15,6 @@ import { parseToAbout, parseToContact, parseToHeroData } from "@/libs/data-parse
 
 export default async function Home() {
   const profile = await getProfile();
-  console.log(profile)
   const hero = parseToHeroData(profile);
   const contact = parseToContact(profile);
   const about = parseToAbout(profile);
