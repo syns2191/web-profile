@@ -9,7 +9,6 @@ import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { SectionTransition } from "@/components/section-transition";
-import { stack, projects } from "@/config/app.config";
 import { getProfile } from "@/libs/api";
 import { parseToAbout, parseToContact, parseToHeroData } from "@/libs/data-parse";
 
@@ -50,7 +49,6 @@ export default async function Home() {
           <SkillList userId={profile._id || ''} />
         </section>
       </SectionTransition>
-      
 
       {/* GitHub Activity Section */}
       <SectionTransition animation="animate-slide-up">

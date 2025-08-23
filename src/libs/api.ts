@@ -34,7 +34,9 @@ export const getProfile = async (): Promise<Partial<TProfileResponse>> => {
     const pathUrl = '/api/users/profile';
     const apiUrl = `${API_URL}${pathUrl}`;
     console.log(apiUrl)
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, {
+      cache: "no-store"
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
