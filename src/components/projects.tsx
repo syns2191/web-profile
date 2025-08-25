@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { SectionTransition } from "./section-transition";
-import { TPropsProject } from "@/libs/type";
 import { getProjects } from "@/libs/api";
 import { parseToProject } from "@/libs/data-parse";
 import { ChipStack } from "./chip-stack";

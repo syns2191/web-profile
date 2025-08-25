@@ -1,4 +1,4 @@
-import { TPropsSkills, TStack, TStackCategories } from "@/libs/type"
+import { TStack, TStackCategories } from "@/libs/type"
 import { SectionTransition } from "./section-transition"
 import { getSkill } from "@/libs/api";
 import { parseToSkillSet } from "@/libs/data-parse";

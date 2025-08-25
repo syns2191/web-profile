@@ -26,7 +26,7 @@ function getOrCreateVisitorId(): string {
 export function Chats(props: TPropChat) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messageInput, setMessageInput] = useState('');
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [messages, setMessages] = useState<ChatMessage[]>([
     { text: 'Hello! How can I help you today?', sender: 'sutralia' },
   ]);
