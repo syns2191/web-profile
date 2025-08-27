@@ -9,6 +9,9 @@ export const login = async (email: string, password: string): Promise<boolean> =
 
     if (response.data && response.data.accessToken) {
       localStorage.setItem(TOKEN_KEY, response.data.accessToken);
+      const userRes = await apiClient.get('/api/auth/verify');
+      const dataUser = userRes.data;
+      localStorage.setItem('user', JSON.stringify(dataUser));
       return true;
     }
     return false;

@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin-layout';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import apiClient from '@/libs/api-client';
+import SingleSelect from '@/components/single-select'; // Import the new component
 
 interface TechItem {
   _id: string;
@@ -20,6 +21,11 @@ interface TechItem {
 }
 
 interface TechCategory {
+  _id: string;
+  categoryName: string;
+}
+
+interface CategoryOption {
   id: string;
   name: string;
 }
@@ -31,7 +37,7 @@ export default function EditTechItemPage({ params }: any) {
   const [formName, setFormName] = useState('');
   const [formCategory, setFormCategory] = useState(''); // This will store category ID
   const [formIconUrl, setFormIconUrl] = useState('');
-  const [availableCategories, setAvailableCategories] = useState<TechCategory[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<CategoryOption[]>([]);
 
   useEffect(() => {
     const fetchTechItemAndCategories = async () => {
@@ -49,7 +55,12 @@ export default function EditTechItemPage({ params }: any) {
             categoryName: ''
           }
         });
-        setAvailableCategories(categoriesResponse.data);
+        const categoryData = categoriesResponse.data;
+        const categoryMapped = categoryData.map((item) => ({
+          id: item._id,
+          name: item.categoryName
+        }));
+        setAvailableCategories(categoryMapped);
       } catch (error) {
         console.error('Error fetching data:', error);
         alert('Failed to load data.');
@@ -98,19 +109,12 @@ export default function EditTechItemPage({ params }: any) {
           </div>
           <div>
             <label htmlFor="techCategory" className="block text-gray-700 text-sm font-medium mb-2">Category:</label>
-            <select
-              id="techCategory"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            <SingleSelect
+              options={availableCategories}
               value={formCategory}
-              onChange={(e) => setFormCategory(e.target.value)}
-            >
-              <option value="">Select a category</option>
-              {availableCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              onChange={setFormCategory}
+              placeholder="Select a category"
+            />
           </div>
           <div>
             <label htmlFor="techIconUrl" className="block text-gray-700 text-sm font-medium mb-2">Icon URL:</label>

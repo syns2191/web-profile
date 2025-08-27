@@ -18,7 +18,7 @@ export function Navbar() {
           <li><Link href="#projects" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Projects</Link></li>
           <li><Link href="#skills" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Skills</Link></li>
           <li><Link href="#contact" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Contact</Link></li>
-          <li><Link href="/activity" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Activity</Link></li>
+          {/* <li><Link href="/activity" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Activity</Link></li> */}
         </ul>
 
         {/* Mobile Menu Button */}
@@ -39,7 +39,7 @@ export function Navbar() {
               <li><Link href="#projects" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Projects</Link></li>
               <li><Link href="#skills" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Skills</Link></li>
               <li><Link href="#contact" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Contact</Link></li>
-              <li><Link href="/activity" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Activity</Link></li>
+              {/* <li><Link href="/activity" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Activity</Link></li> */}
             </ul>
           </div>
         )}

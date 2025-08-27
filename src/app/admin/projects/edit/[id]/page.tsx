@@ -13,14 +13,8 @@ import apiClient from '@/libs/api-client';
 
 interface TechItem {
   _id: string;
-  stack: {
-    stackName: string;
-    stackIcon: string;
-  },
-  category: {
-    _id: string;
-    categoryName: string;
-  };
+  stackName: string;
+  stackIcon: string;
 }
 
 interface TechOptionLis {
@@ -57,13 +51,18 @@ export default function EditProjectPage({ params }: any) {
         setFormName(project.projectTitle);
         setFormDescription(project.projectShortDescription);
         const selectedTechs = project.projectTeachStack.map((item) => item._id);
+        console.log('selectedTechIds', selectedTechIds);
         setSelectedTechIds(selectedTechs);
 
         // Fetch Available Technologies
-        const techListResponse = await apiClient.get<TechItem[]>('/api/tech-stack/category');
+        const techListResponse = await apiClient.get<TechItem[]>('/api/tech-stack', {
+          params: {
+            stackName: ''
+          }
+        });
         const dataMapped = techListResponse.data.map((item) => ({
           id: item._id,
-          name: item.stack.stackName
+          name: item.stackName
         }));
         setAvailableTechs(dataMapped);
       } catch (error) {

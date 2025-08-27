@@ -2,100 +2,144 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import AdminLayout from '@/components/admin-layout';
+import apiClient from '@/libs/api-client';
+import { io, Socket } from 'socket.io-client';
+import { config } from '@/config/app.config';
+import { read } from 'fs';
 
 interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'admin';
-  timestamp: string;
+  _id?: string;
+  message: string;
+  sender: string;
+  to: string;
+  createdAt: string;
+  name: string;
+  profileId: string;
+  conversationId: string;
+  read: boolean;
 }
 
 interface Conversation {
-  id: string;
-  userId: string;
-  userName: string;
-  messages: Message[];
-  lastMessageTimestamp: string;
+  conversationId: string;
+  lastMessage: Message;
 }
 
-// Dummy Data
-const dummyConversations: Conversation[] = [
-  {
-    id: 'conv1',
-    userId: 'user123',
-    userName: 'Alice Smith',
-    messages: [
-      { id: 'msg1', text: 'Hi, I have a question about your portfolio.', sender: 'user', timestamp: '2024-07-20T10:00:00Z' },
-      { id: 'msg2', text: 'Sure, how can I help you?', sender: 'admin', timestamp: '2024-07-20T10:05:00Z' },
-      { id: 'msg3', text: 'I&apos;m interested in your React projects.', sender: 'user', timestamp: '2024-07-20T10:10:00Z' },
-    ],
-    lastMessageTimestamp: '2024-07-20T10:10:00Z',
-  },
-  {
-    id: 'conv2',
-    userId: 'user456',
-    userName: 'Bob Johnson',
-    messages: [
-      { id: 'msg4', text: 'Hello, I saw your profile and have a job offer.', sender: 'user', timestamp: '2024-07-21T11:30:00Z' },
-      { id: 'msg5', text: 'Great! Please tell me more.', sender: 'admin', timestamp: '2024-07-21T11:35:00Z' },
-    ],
-    lastMessageTimestamp: '2024-07-21T11:35:00Z',
-  },
-  {
-    id: 'conv3',
-    userId: 'user789',
-    userName: 'Charlie Brown',
-    messages: [
-      { id: 'msg6', text: 'Just wanted to say your website is awesome!', sender: 'user', timestamp: '2024-07-22T14:00:00Z' },
-      { id: 'msg7', text: 'Thank you so much!', sender: 'admin', timestamp: '2024-07-22T14:05:00Z' },
-    ],
-    lastMessageTimestamp: '2024-07-22T14:05:00Z',
-  },
-];
+
+interface conversationMessages {
+  conversationId: string;
+  messages: Message[]
+}
+
+let socket: Socket | null = null;
 
 const ChatConversationsPage = () => {
-  const [conversations, setConversations] = useState<Conversation[]>(dummyConversations);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false); // New state for mobile view
   const chatMessagesRef = useRef<HTMLDivElement>(null);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [conversationMessages, setConversationMessages] = useState<conversationMessages | null>(null)
+  const [adminProfileId, setAdminProfileId] = useState<string | null>(null);
+  const conversationsRef = useRef(conversations);
 
-  const selectedConversation = conversations.find(
-    (conv) => conv.id === selectedConversationId
-  );
+  const getConversation = async () => {
+    const response = await apiClient.get(`/api/chat/conversations/${'68a09522a15fa940052244c3'}`);
+    const conversations = response.data;
+    setConversations(conversations);
+  }
+
+  useEffect(() => {
+    getConversation();
+    if (!socket) {
+      socket = io(config.NEXT_PUBLIC_API_URL, { query: { role: 'owner' }});
+      socket.on('connect', () => {
+        const user: string | null = localStorage.getItem('user');
+        if (user) {
+          const userParse = JSON.parse(user);
+          setAdminProfileId(userParse?._id); // Set adminProfileId
+          socket?.emit('profile:join', {
+            profileId: userParse?._id,
+            name: userParse?.email
+          });
+        }
+      })
+      socket?.on('conv:message', (m: Message) => {
+        setConversations((prev) => {
+          if (prev.some((pv) => pv.conversationId === m.conversationId)) {
+            return prev.map((conv) => conv.conversationId === m.conversationId ? { ...conv, lastMessage: m } : conv)
+          }
+          return [...prev, {conversationId: m.conversationId, lastMessage: m }]
+        });
+      })
+      socket?.on('guest:read:message', (m) => {
+        console.log('guest read message', m);
+        setConversationMessages((prev) => prev && prev?.conversationId === m.conversationId ? {
+          ...prev, messages: prev?.messages.map((x) => {
+            if (x.to === m.to) {
+              x.read = true;
+            }
+            return x;
+          })
+        } : prev);
+      })
+      socket?.on('chat:admin:echo', (m: Message) => {
+        console.log('message admin echo', m);
+        setConversationMessages((prev) => prev?.conversationId === m.conversationId ? { ...prev, messages: [...prev.messages, m] } : prev);
+      });
+      socket?.on('visitor:message', (m: Message) => {
+        console.log('visitor message', m);
+        setConversationMessages((prev) => prev?.conversationId === m.conversationId ? { ...prev, messages: [...prev.messages, m] } : prev);
+        setConversations((prev) => prev.map((conv) => conv.conversationId === m.conversationId ? { ...conv, lastMessage: m } : conv));
+      })
+    }
+    return () => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (chatMessagesRef.current) {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, conversationMessages]);
 
   const handleSendMessage = () => {
     if (messageInput.trim() === '' || !selectedConversationId) return;
 
     const newMessage: Message = {
-      id: `msg${Date.now()}`,
-      text: messageInput,
-      sender: 'admin', // Admin is sending the message
-      timestamp: new Date().toISOString(),
+      message: messageInput,
+      sender: selectedConversation?.lastMessage?.profileId ?? '', // Admin is sending the messagej
+      createdAt: new Date().toISOString(),
+      to: selectedConversation?.lastMessage.name ?? '',
+      profileId: selectedConversation?.lastMessage.profileId ?? '',
+      name: selectedConversation?.lastMessage.name ?? '',
+      conversationId: selectedConversationId,
+      read: false
     };
-
-    setConversations((prevConversations) =>
-      prevConversations.map((conv) =>
-        conv.id === selectedConversationId
-          ? {
-              ...conv,
-              messages: [...conv.messages, newMessage],
-              lastMessageTimestamp: newMessage.timestamp,
-            }
-          : conv
-      )
-    );
+    socket?.emit('admin:message', newMessage);
     setMessageInput('');
   };
 
-  const handleSelectConversation = (convId: string) => {
+  const getConversationMessage = async (convId: string) => {
+    const response = await apiClient.get(`/api/chat/${convId}`);
+    const chatMessage: Message[] = response.data;
+    setConversationMessages({ conversationId: convId, messages: chatMessage });
+  }
+
+  const handleSelectConversation = (convId: string, to: string) => {
     setSelectedConversationId(convId);
+    const selectConv = conversations.find((conv) => conv.conversationId === convId);
+    if (selectConv) {
+      setSelectedConversation(selectConv);
+    }
+    getConversationMessage(convId);
+    socket?.emit('admin:join', { conversationId: convId });
+    setConversations((prev) => prev.map((conv) => conv.conversationId === convId ? { ...conv, lastMessage: { ...conv.lastMessage, read: true } } : conv));
+    socket?.emit('read:message', { conversationId: convId, to: to })
     setIsMobileChatOpen(true); // Open chat view on mobile
   };
 
@@ -117,22 +161,26 @@ const ChatConversationsPage = () => {
             <p className="p-4 text-gray-500">No conversations yet.</p>
           ) : (
             <ul>
-              {conversations.sort((a, b) => new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime()).map((conv) => (
+              {conversations.sort((a, b) => new Date(b.lastMessage.createdAt).getTime() - new Date(a.lastMessage.createdAt).getTime()).map((conv) => (
                 <li
-                  key={conv.id}
-                  className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${
-                    selectedConversationId === conv.id ? 'bg-blue-50 text-blue-700' : ''
-                  }`}
-                  onClick={() => handleSelectConversation(conv.id)}
+                  key={conv.conversationId}
+                  className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-50 ${selectedConversationId === conv.conversationId ? 'bg-blue-50 text-blue-700' : ''
+                    }`}
+                  onClick={() => handleSelectConversation(conv.conversationId, conv.lastMessage.to)}
                 >
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-lg">{conv.userName}</span>
+                    <span className="font-semibold text-lg flex items-center">
+                      {conv.lastMessage.name}
+                    </span>
+                    {conv.lastMessage.sender !== adminProfileId && !conv.lastMessage.read && (
+                      <span className="ml-2 w-2 h-2 text-right rounded-full bg-red-600"></span>
+                    )}
                     <span className="text-sm text-gray-500">
-                      {new Date(conv.lastMessageTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(conv.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   <p className="text-sm text-gray-600 truncate">
-                    {conv.messages[conv.messages.length - 1]?.text}
+                    {conv.lastMessage.message}
                   </p>
                 </li>
               ))}
@@ -165,27 +213,51 @@ const ChatConversationsPage = () => {
                   </svg>
                 </button>
                 <h3 className="text-xl font-semibold text-gray-700">
-                  Chat with {selectedConversation.userName}
+                  Chat with {selectedConversation.lastMessage.name}
                 </h3>
               </div>
               <div ref={chatMessagesRef} className="flex-1 p-4 overflow-y-auto bg-gray-100">
-                {selectedConversation.messages.map((message) => (
+                {conversationMessages?.messages.map((message) => (
                   <div
-                    key={message.id}
-                    className={`flex mb-4 ${
-                      message.sender === 'admin' ? 'justify-end' : 'justify-start'
-                    }`}
+                    key={message._id}
+                    className={`flex mb-4 ${message.sender === selectedConversation.lastMessage.profileId ? 'justify-end' : 'justify-start'
+                      }`}
                   >
                     <div
-                      className={`max-w-[70%] p-3 rounded-lg shadow ${
-                        message.sender === 'admin'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-gray-300 text-gray-800'
-                      }`}
+                      className={`max-w-[70%] p-3 rounded-lg shadow ${message.sender === selectedConversation.lastMessage.profileId
+                        ? 'bg-gray-300 text-gray-800'
+                        : 'bg-blue-500 text-white'
+                        }`}
                     >
-                      <p className="text-sm">{message.text}</p>
-                      <span className="block text-xs mt-1 opacity-75">
-                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      <p className="text-sm">{message.message}</p>
+                      <span className="block text-xs mt-1 opacity-75 flex items-center">
+                        {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {message.sender === adminProfileId && (
+                          <svg
+                            className="ml-1 h-4 w-4 text-green-700"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M5 13l4 4L19 7"
+                            ></path>
+                            {
+                              message.read && (
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M17 9l-4 4-2-2"
+                                ></path>
+                              )
+                            }
+                          </svg>
+                        )}
                       </span>
                     </div>
                   </div>

@@ -33,7 +33,7 @@ export const parseToProject = (projectResponse: IProjectResponse[]): TProjects[]
       name: stack.stackName,
       icon: stack.stackIcon
     })),
-    projectShortDescription: project.prejectShortDescription
+    projectShortDescription: project.projectShortDescription
   }))
 }
 

@@ -5,6 +5,7 @@ import AdminLayout from '@/components/admin-layout';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import apiClient from '@/libs/api-client';
+import SingleSelect from '@/components/single-select'; // Import the new component
 
 // Removed unused TechItem interface
 
@@ -77,19 +78,12 @@ export default function AddTechItemPage() {
           </div>
           <div>
             <label htmlFor="techCategory" className="block text-gray-700 text-sm font-medium mb-2">Category:</label>
-            <select
-              id="techCategory"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            <SingleSelect
+              options={availableCategories}
               value={formCategory}
-              onChange={(e) => setFormCategory(e.target.value)}
-            >
-              <option value="">Select a category</option>
-              {availableCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              onChange={setFormCategory}
+              placeholder="Select a category"
+            />
           </div>
           <div>
             <label htmlFor="techIconUrl" className="block text-gray-700 text-sm font-medium mb-2">Icon URL:</label>

@@ -3,6 +3,7 @@ import { SectionTransition } from "./section-transition";
 import { getProjects } from "@/libs/api";
 import { parseToProject } from "@/libs/data-parse";
 import { ChipStack } from "./chip-stack";
+import ReactMarkdowm from 'react-markdown';
 
 type TPropProject = {
   userId: string
@@ -22,7 +23,7 @@ export async function ProjectList(props: TPropProject) {
               <Image src={project.projectSnapshot} alt={project.projectTitle} width={400} height={250} className="w-full h-48 object-cover" />
               <div className="p-6">
                 <h3 className="text-2xl font-semibold mb-2 text-[var(--color-primary-accent)] dark:text-white">{project.projectTitle}</h3>
-                <p className="text-[var(--color-primary-dark)] dark:text-white mb-4">{project.projectShortDescription}</p>
+                <div className="text-[var(--color-primary-dark)] dark:text-white mb-4"><ReactMarkdowm>{project.projectShortDescription}</ReactMarkdowm></div>
                 <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                   {
                     project.projectTechs.map((stack, idx) => (

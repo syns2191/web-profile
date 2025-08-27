@@ -122,7 +122,7 @@ const menuItems = [
         d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
       ></path>
     </svg>
-  ) },
+  ), badge: true },
   { name: 'Settings', href: '/admin/settings', icon: (
     <svg
       className="h-5 w-5"
@@ -239,6 +239,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         {item.icon}
                       </span>
                       {!isCollapsed && item.name}
+                      {item.badge && !isCollapsed && (
+                        <span className="ml-auto w-2 h-2 rounded-full bg-red-600"></span>
+                      )}
                     </p>
                   </Link>
                 </li>

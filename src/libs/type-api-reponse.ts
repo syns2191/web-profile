@@ -18,7 +18,7 @@ export type TProfileResponse = {
 
 export interface IProjectResponse {
   projectTitle: string;
-  prejectShortDescription: string;
+  projectShortDescription: string;
   projectImage: string;
   projectDemoLink: string;
   projectCodeLink: string;

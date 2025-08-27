@@ -4,8 +4,12 @@ import { io, Socket } from 'socket.io-client';
 import { config } from '@/config/app.config';
 
 interface ChatMessage {
-  text: string;
-  sender: 'user' | 'sutralia' | 'Bot' | 'System';
+  message: string;
+  sender: string;
+  conversationId: string;
+  to: string;
+  profileId: string;
+  read: boolean;
 }
 
 let socket: Socket | null = null;
@@ -14,22 +18,25 @@ type TPropChat = {
   userId: string
 }
 
-function getOrCreateVisitorId(): string {
-  let id = localStorage.getItem("visitor_id");
-  if (!id) {
-    id = "visitor_" + crypto.randomUUID().slice(0, 8); 
-    localStorage.setItem("visitor_id", id);
-  }
-  return id;
-}
-
 export function Chats(props: TPropChat) {
+  const [guestId, setGuestId] = useState<string>('');
+  const guestIdRef = useRef(guestId);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const isChatOpenRef = useRef(isChatOpen);
   const [messageInput, setMessageInput] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const conversationIdRef = useRef(conversationId);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { text: 'Hello! How can I help you today?', sender: 'sutralia' },
+    {
+      message: 'Hello! How can I help you today?',
+      sender: 'sutralia',
+      to: guestId,
+      conversationId: conversationId ?? '',
+      profileId: props.userId,
+      read: true
+    },
   ]);
+  const [hasNewMessages, setHasNewMessages] = useState(false); // Added hasNewMessages state
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -40,46 +47,52 @@ export function Chats(props: TPropChat) {
   }, [messages]);
 
   useEffect(() => {
-    if (isChatOpen && !socket) {
-      // Connect to Socket.IO server
-      socket = io(config.NEXT_PUBLIC_API_URL); // Replace with your Socket.IO server URL
+    getOrCreateVisitorId()
+    socket = io(config.NEXT_PUBLIC_API_URL); // Replace with your Socket.IO server URL
 
-      const storedId = localStorage.getItem("conversationId");
+    const storedId = localStorage.getItem("conversationId");
 
-      socket.on("connect", () => {
-        socket?.emit("visitor:join", { conversationId: storedId });
-      });
+    socket.on("connect", () => {
+      socket?.emit("visitor:join", { conversationId: storedId });
+    });
 
-      socket.on("system:welcome", ({ conversationId }) => {
-        setConversationId(conversationId);
-        localStorage.setItem("conversationId", conversationId);
-      });
+    socket.on("system:welcome", ({ conversationId }) => {
+      setConversationId(conversationId);
+      conversationIdRef.current = conversationId;
+      localStorage.setItem("conversationId", conversationId);
+    });
 
-      socket.on("chat:echo", (m) =>
-        setMessages((prev) => [...prev, { sender: 'user', text: m.message }])
-      );
-      socket.on("admin:reply", (m) =>
-        setMessages((prev) => [...prev, { sender: 'sutralia', text: m.message }])
-      );
-      socket.on("bot:reply", (m) =>
-        setMessages((prev) => [...prev, { sender: 'Bot', text: m.text }])
-      );
-      socket.on("system:info", (m) =>
-        setMessages((prev) => [...prev, { sender: 'System', text: m.text }])
-      );
-
-      socket.on('chat message', (msg: string) => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { id: prevMessages.length + 1, text: msg, sender: 'sutralia' },
-        ]);
-      });
-    }
-
-    if (!isChatOpen && socket) {
-      socket.disconnect();
-      socket = null;
-    }
+    socket.on("chat:echo", (m) =>
+      setMessages((prev) => [...prev, { ...m }])
+    );
+    socket.on("admin:reply", (m) => {
+      setMessages((prev) => [...prev, { ...m }]);
+      if (!isChatOpenRef.current) { // Check if chat is closed
+        setHasNewMessages(true);
+        console.log('hasNewMessages set to true from admin:reply'); // Debug log
+      } else {
+        socket?.emit('guest:read:message', {
+          conversationId: conversationIdRef.current,
+          to: guestIdRef.current
+        });
+      }
+    });
+    socket.on("bot:reply", (m) => {
+      setMessages((prev) => [...prev, { ...m }]);
+      if (!isChatOpenRef.current) { // Check if chat is closed
+        setHasNewMessages(true);
+        console.log('hasNewMessages set to true from bot:reply'); // Debug log
+      }
+    });
+    socket.on("system:info", (m) =>
+      setMessages((prev) => [...prev, { ...m }])
+    );
+    socket.on('admin:read:message', () => setMessages((prev) => prev.map((p) => {
+      if (p.sender === guestIdRef.current) {
+        p.read = true;
+      }
+      return p;
+    })));
 
     return () => {
       if (socket) {
@@ -87,17 +100,49 @@ export function Chats(props: TPropChat) {
         socket = null;
       }
     };
+  }, [])
+
+  useEffect(() => {
+    console.log('isChatOpen changed:', isChatOpen); // Debug log
+    isChatOpenRef.current = isChatOpen;
+    if (isChatOpen) {
+      setHasNewMessages(false); // Reset new message indicator when chat is opened
+      console.log('hasNewMessages set to false because chat is open'); // Debug log
+    }
+    return () => {
+      if (socket) {
+        socket?.emit('guest:read:message', {
+          conversationId: conversationId,
+          to: guestId
+        });
+      }
+    }
   }, [isChatOpen]);
+
+  const getOrCreateVisitorId = (): string => {
+    let id = localStorage.getItem("visitor_id");
+    if (!id) {
+      id = "visitor_" + crypto.randomUUID().slice(0, 8);
+      localStorage.setItem("visitor_id", id);
+    }
+
+    setGuestId(id);
+    guestIdRef.current = id;
+    return id;
+  }
 
   const handleSendMessage = () => {
     if (messageInput.trim() !== '') {
 
       if (socket) {
         socket.emit("visitor:message", {
-          name: getOrCreateVisitorId(), // optional: collect from profile form
+          name: guestId, // optional: collect from profile form
           message: messageInput,
           conversationId: localStorage.getItem("conversationId"),
-          profileId: props.userId
+          profileId: props.userId,
+          sender: guestId,
+          to: props.userId,
+          extraContent: {}
         });
       }
       setMessageInput('');
@@ -113,6 +158,9 @@ export function Chats(props: TPropChat) {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
+        {hasNewMessages && (
+          <span className="absolute top-0 right-0 block h-3 w-3 rounded-full bg-red-600 ring-2 ring-white"></span>
+        )}
       </button>
       {
         isChatOpen && (
@@ -129,15 +177,39 @@ export function Chats(props: TPropChat) {
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex mb-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex mb-2 ${msg.sender === guestId ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`p-3 rounded-lg max-w-[70%] ${msg.sender === 'user'
+                    className={`p-3 rounded-lg max-w-[70%] flex items-end ${msg.sender === 'user'
                       ? 'bg-[var(--color-primary-accent)] text-white'
                       : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                   >
-                    {msg.text}
+                    {msg.message}
+                    {msg.sender === guestId && (
+                      <svg
+                        className="ml-1 h-3 w-3 text-green-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                        {msg.read && (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M17 9l-4 4-2-2"
+                          ></path>
+                        )}
+                      </svg>
+                    )}
                   </div>
                 </div>
               ))}
