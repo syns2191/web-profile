@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,15 +9,16 @@ export function Navbar() {
   return (
     <nav className="bg-white dark:bg-[var(--color-primary-medium)] shadow-md py-4 fixed w-full z-10">
       <div className="container mx-auto flex justify-between items-center px-4">
-        <a href="#" className="text-2xl font-bold text-[var(--color-primary-accent)] dark:text-white">sutralian.dev</a>
+        <Link href="#" className="text-2xl font-bold text-[var(--color-primary-accent)] dark:text-white">sutralian.dev</Link>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-6 items-center">
-          <li><a href="#hero" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Home</a></li>
-          <li><a href="#about" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">About</a></li>
-          <li><a href="#projects" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Projects</a></li>
-          <li><a href="#skills" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Skills</a></li>
-          <li><a href="#contact" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Contact</a></li>
+          <li><Link href="#hero" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Home</Link></li>
+          <li><Link href="#about" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">About</Link></li>
+          <li><Link href="#projects" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Projects</Link></li>
+          <li><Link href="#skills" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Skills</Link></li>
+          <li><Link href="#contact" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Contact</Link></li>
+          {/* <li><Link href="/activity" className="hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Activity</Link></li> */}
         </ul>
 
         {/* Mobile Menu Button */}
@@ -32,11 +34,12 @@ export function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-white dark:bg-[var(--color-primary-medium)] shadow-md py-4">
             <ul className="flex flex-col items-center space-y-4">
-              <li><a href="#hero" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Home</a></li>
-              <li><a href="#about" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">About</a></li>
-              <li><a href="#projects" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Projects</a></li>
-              <li><a href="#skills" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Skills</a></li>
-              <li><a href="#contact" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Contact</a></li>
+              <li><Link href="#hero" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Home</Link></li>
+              <li><Link href="#about" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">About</Link></li>
+              <li><Link href="#projects" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Projects</Link></li>
+              <li><Link href="#skills" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Skills</Link></li>
+              <li><Link href="#contact" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Contact</Link></li>
+              {/* <li><Link href="/activity" onClick={() => setIsMenuOpen(false)} className="block py-2 text-[var(--color-primary-dark)] dark:text-white hover:text-[var(--color-primary-accent)] dark:hover:text-white transition-colors duration-300">Activity</Link></li> */}
             </ul>
           </div>
         )}

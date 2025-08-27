@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useTheme } from './theme-provider';
 
 export const ThemeSwitcher = () => {
-  const { setTheme, isDarkMode, toggleDarkMode } = useTheme();
+  const { setTheme } = useTheme();
   const [selected, setSelected] = useState({name: 'Default'})
 
   const themes = [
