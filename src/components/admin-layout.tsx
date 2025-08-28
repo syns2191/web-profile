@@ -171,7 +171,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-50">
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
@@ -182,13 +182,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 transform bg-gray-800 text-white transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'} ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-40 transform bg-gray-900 text-gray-200 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'} ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:relative lg:translate-x-0`}
       >
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between p-4 text-2xl font-bold border-b border-gray-700">
             {!isCollapsed && "Admin Panel"}
             <button
-              className="text-white lg:hidden"
+              className="text-gray-200 lg:hidden"
               onClick={() => setIsSidebarOpen(false)}
             >
               <svg
@@ -226,13 +226,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               </svg>
             </button>
           </div>
-          <nav className="flex-grow p-4">
+          <nav className="flex-grow p-3">
             <ul>
               {menuItems.map((item) => (
                 <li key={item.name} className="mb-2">
                   <Link href={item.href}>
                     <p
-                      className={`flex items-center rounded py-2 px-4 transition duration-200 ${pathname === item.href ? 'bg-blue-600' : 'hover:bg-gray-700'}`}
+                      className={`flex items-center rounded py-1.5 px-3 transition duration-200 ${pathname === item.href ? 'bg-gray-700 text-white' : 'hover:bg-gray-800'}`}
                       onClick={() => setIsSidebarOpen(false)} // Close mobile sidebar on item click
                     >
                       <span className={isCollapsed ? 'mr-0' : 'mr-3'}>
@@ -248,7 +248,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               ))}
             </ul>
           </nav>
-          <div className="p-4 border-t border-gray-700">
+          <div className="p-3 border-t border-gray-700">
             <button
               onClick={handleLogout}
               className="w-full rounded bg-red-600 py-2 px-4 font-bold text-white hover:bg-red-700 focus:outline-none focus:shadow-outline"
@@ -276,10 +276,10 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <div className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
-        <header className="flex items-center justify-between bg-white p-4 shadow-md lg:hidden">
+      <div className={`flex flex-1 flex-col transition-all duration-300 ease-in-out ${isCollapsed ? 'lg:ml-20' : 'lg:ml-20'}`}>
+        <header className="flex items-center justify-between bg-white p-4 shadow-sm lg:hidden">
           <button
-            className="text-gray-600"
+            className="text-gray-700"
             onClick={() => setIsSidebarOpen(true)}
           >
             <svg
@@ -300,7 +300,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <h1 className="text-xl font-semibold text-gray-800">Admin Panel</h1>
           <div></div> {/* Placeholder for right alignment */}
         </header>
-        <main className="flex-1 p-8 overflow-y-auto">
+        <main className="flex-1 p-4 overflow-y-auto">
           {children}
         </main>
       </div>
