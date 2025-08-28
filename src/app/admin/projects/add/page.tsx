@@ -9,7 +9,7 @@ import apiClient from '@/libs/api-client';
 
 const SimpleMdeReact = dynamic(() => import('react-simplemde-editor'), { ssr: false });
 import 'easymde/dist/easymde.min.css';
-import EasyMDE from 'easymde';
+import '@/styles/easymde-custom.css'; // Our custom styles
 
 interface TechItem {
   _id: string;

@@ -8,7 +8,7 @@ import Link from 'next/link';
 
 const SimpleMdeReact = dynamic(() => import('react-simplemde-editor'), { ssr: false });
 import 'easymde/dist/easymde.min.css';
-import EasyMDE from 'easymde';
+import '@/styles/easymde-custom.css'; // Our custom styles
 import apiClient from '@/libs/api-client';
 
 interface TechItem {

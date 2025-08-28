@@ -7,9 +7,9 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-[var(--navbar-background)] shadow-md py-4 fixed w-full z-10">
+    <nav className="bg-[var(--navbar-background)] shadow-md py-4 fixed w-full z-10 text-[var(--color-primary-light)]">
       <div className="container mx-auto flex justify-between items-center px-4">
-        <Link href="#" className="text-2xl font-bold text-[var(--foreground)]">sutralian.dev</Link>
+        <Link href="#" className="text-2xl font-bold text-[var(--color-primary-accent)]">sutralian.dev</Link>
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-6 items-center">

@@ -1,0 +1,102 @@
+/* src/styles/easymde-custom.css */
+
+/* Overall editor container */
+.EasyMDEContainer {
+  border: 1px solid #e2e8f0; /* gray-200 */
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-sm */
+}
+
+/* Toolbar */
+.editor-toolbar {
+  background-color: #f8fafc; /* gray-50 */
+  border-bottom: 1px solid #e2e8f0; /* gray-200 */
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.editor-toolbar button {
+  color: #4a5568; /* gray-700 */
+}
+
+.editor-toolbar button.active,
+.editor-toolbar button:hover {
+  background-color: #edf2f7; /* gray-100 */
+  color: #2d3748; /* gray-800 */
+}
+
+/* Editor area */
+.CodeMirror {
+  border: none; /* Remove default CodeMirror border */
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.5;
+  color: #2d3748; /* gray-800 */
+  background-color: #ffffff; /* white */
+}
+
+/* Preview area */
+.editor-preview {
+  background-color: #ffffff; /* white */
+  color: #2d3748; /* gray-800 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1rem; /* base font size */
+  line-height: 1.6;
+  padding: 1rem;
+}
+
+.editor-preview h1, .editor-preview h2, .editor-preview h3, .editor-preview h4, .editor-preview h5, .editor-preview h6 {
+  font-weight: 700; /* bold */
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.editor-preview h1 { font-size: 2em; }
+.editor-preview h2 { font-size: 1.5em; }
+.editor-preview h3 { font-size: 1.25em; }
+
+.editor-preview p {
+  margin-bottom: 1em;
+}
+
+.editor-preview ul, .editor-preview ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.editor-preview pre {
+  background-color: #f1f5f9; /* gray-100 */
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+
+.editor-preview code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background-color: #f1f5f9; /* gray-100 */
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+}
+
+.editor-preview pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.editor-preview a {
+  color: #4c51bf; /* indigo-700 */
+  text-decoration: underline;
+}
+
+/* Status bar */
+.editor-statusbar {
+  background-color: #f8fafc; /* gray-50 */
+  border-top: 1px solid #e2e8f0; /* gray-200 */
+  color: #718096; /* gray-600 */
+  font-size: 0.75rem; /* text-xs */
+  padding: 0.5rem 1rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}

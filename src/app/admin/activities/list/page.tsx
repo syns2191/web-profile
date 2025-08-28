@@ -62,11 +62,11 @@ export default function ActivitiesListPage() {
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Activity Management</h2>
 
       {/* Activities List */}
-      <div className="bg-white p-8 rounded-lg shadow-xl border border-gray-200">
+      <div className="bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-lg border-t border-gray-100">
         <h3 className="text-2xl font-semibold mb-6 text-gray-800 border-b pb-3">Existing Activities</h3>
         <div className="mb-4">
           <Link href="/admin/activities/add">
-            <button className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <button className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               Add New Activity
             </button>
           </Link>
@@ -76,33 +76,33 @@ export default function ActivitiesListPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-100">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Related Projects</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Title</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Slug</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Date</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Related Projects</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {activities.map((activity) => (
-                  <tr key={activity.id}>
+                  <tr key={activity.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{activity.title}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.slug}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.date}</td>
-                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-500">{getProjectNames(activity.relatedProjectIds)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{activity.slug}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{activity.date}</td>
+                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-600">{getProjectNames(activity.relatedProjectIds)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link href={`/admin/activities/edit/${activity.id}`}>
                         <button
-                          className="text-indigo-600 hover:text-indigo-900 mr-3"
+                          className="text-indigo-600 hover:text-indigo-700 mr-3"
                         >
                           Edit
                         </button>
                       </Link>
                       <button
                         onClick={() => handleDeleteClick(activity.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 hover:text-red-700"
                       >
                         Delete
                       </button>

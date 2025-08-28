@@ -20,6 +20,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { mockTasks } from '@/libs/mock-tasks';
 import { SectionTransition } from '@/components/section-transition';
 import TaskCardDetail from '@/components/task-card-detail';
+import { useTheme } from '@/components/theme-provider';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 type Task = {
   id: string;
@@ -98,6 +100,9 @@ const BoardPage = () => {
   const [tasks, setTasks] = useState<Record<string, Task>>(initialTasks);
   const [columns, setColumns] = useState<Record<string, Column>>(initialColumns);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const { theme } = useTheme();
+
+  const mainDivClasses = `min-h-screen w-full mx-auto relative ${theme === 'newspaper' ? 'paper-texture vintage-shadow' : ''}`;
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -201,18 +206,18 @@ const BoardPage = () => {
 
   return (
     <SectionTransition>
-      <div className="min-h-screen w-full mx-auto paper-texture vintage-shadow relative">
-        <div className="fold-line"></div>
+      <div className={mainDivClasses}>
+        {theme === 'newspaper' && <div className="fold-line"></div>}
 
-        <header className="px-6 sm:px-12 py-8 border-b-2 border-neutral-800 relative">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-20"></div>
+        <header className="px-6 sm:px-12 py-8 border-b-2 border-[var(--color-primary-dark)] relative">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary-dark)] to-transparent opacity-20"></div>
           <div className="text-center">
-            <div className="mb-2 text-xs tracking-widest text-neutral-600 uppercase">Task Management</div>
-            <h1 className="font-fraktur text-5xl sm:text-7xl text-neutral-900 tracking-tight mb-2">Project Board</h1>
-            <div className="text-xs italic text-neutral-600">&quot;Organize Your Work, Achieve Your Goals&quot;</div>
-            <div className="flex justify-center items-center gap-4 mt-3 text-neutral-600">
+            <div className="mb-2 text-xs tracking-widest text-[var(--foreground)] uppercase">Task Management</div>
+            <h1 className="font-fraktur text-5xl sm:text-7xl text-[var(--foreground)] tracking-tight mb-2">Project Board</h1>
+            <div className="text-xs italic text-[var(--foreground)]">&quot;Organize Your Work, Achieve Your Goals&quot;</div>
+            <div className="flex justify-center items-center gap-4 mt-3 text-[var(--foreground)]">
               <span className="text-sm">Est. MMXXIV</span>
-              <div className="w-1.5 h-1.5 rounded-full bg-neutral-400"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary-light)]"></div>
               <span className="text-sm">Sunday Edition</span>
             </div>
           </div>
@@ -226,14 +231,14 @@ const BoardPage = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {Object.values(columns).map((column) => (
-                <div key={column.id} className="newspaper-border border-neutral-800 p-6 bg-white/50 ornate-corner">
-                  <h2 className="font-playfair font-black text-xl text-neutral-900 mb-4">{column.title}</h2>
+                <div key={column.id} className={`p-6 ${theme === 'newspaper' ? 'newspaper-border ornate-corner' : 'border-2 border-[var(--color-primary-dark)]'} bg-[var(--background)]/50`}>
+                  <h2 className="font-playfair font-black text-xl text-[var(--foreground)] mb-4">{column.title}</h2>
                   <SortableContext
                     id={column.id}
                     items={column.taskIds}
                   >
                     <div
-                      className="min-h-[200px] p-4 rounded-md bg-neutral-200"
+                      className="min-h-[200px] p-4 rounded-md bg-[var(--color-primary-light)]"
                     >
                       {column.taskIds.map((taskId) => {
                         const task = tasks[taskId];
@@ -247,12 +252,13 @@ const BoardPage = () => {
           </DndContext>
         </main>
 
-        <footer className="px-6 sm:px-12 py-6 border-t border-neutral-800 text-center text-sm text-neutral-600 relative">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-neutral-800 to-transparent opacity-20"></div>
+        <footer className="px-6 sm:px-12 py-6 border-t border-[var(--color-primary-dark)] text-center text-sm text-[var(--foreground)] relative">
+          <div className="flex item-center justify-center"><ThemeSwitcher /></div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary-dark)] to-transparent opacity-20"></div>
           <p className="font-playfair italic">"All the Forum's News That's Fit to Print"</p>
           <div className="mt-2 flex justify-center items-center gap-4">
             <span>Copyright © MMXXIV</span>
-            <div className="w-1.5 h-1.5 rounded-full bg-neutral-400"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary-light)]"></div>
             <span className="font-fraktur">The Daily Forum</span>
           </div>
         </footer>

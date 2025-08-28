@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'ghchart.rshah.org',
         pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'syns.is3.cloudhost.id',
+        pathname: '/**'
       }
     ],
   },
