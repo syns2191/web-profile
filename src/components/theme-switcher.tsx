@@ -5,7 +5,7 @@ import { useTheme } from './theme-provider';
 
 export const ThemeSwitcher = () => {
   const { setTheme } = useTheme();
-  const [selected, setSelected] = useState({ name: 'Default' })
+  const [selected, setSelected] = useState({ name: 'Solarized Osaka' })
 
   const themes = [
     { name: 'Solarized Osaka', value: 'solarized-osaka', colors: { primary: '#002b36', accent: '#2aa198' } },

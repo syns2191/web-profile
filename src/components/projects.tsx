@@ -20,7 +20,7 @@ export async function ProjectList(props: TPropProject) {
         {projects.map((project, idx) => (
           <SectionTransition animation="ease" key={idx}>
             <div className="bg-[var(--color-primary-light)] dark:bg-[var(--color-primary-medium)] rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl min-h-[500px] max-h-[500px]">
-              <Image src={project.projectSnapshot} alt={project.projectTitle} width={400} height={250} className="w-full h-48 object-cover" />
+              <Image  unoptimized src={project.projectSnapshot} alt={project.projectTitle} width={400} height={250} className="w-full h-48 object-cover" />
               <div className="p-6">
                 <h3 className="text-2xl font-semibold mb-2 text-[var(--color-primary-accent)] dark:text-white">{project.projectTitle}</h3>
                 <div className="text-[var(--color-primary-dark)] dark:text-white mb-4"><ReactMarkdowm>{project.projectShortDescription}</ReactMarkdowm></div>

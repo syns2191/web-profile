@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { useTheme } from './theme-provider';
 import { ThemeSwitcher } from './theme-switcher';
 
+import { Activity, Milestone, RelatedGithubIssue, RelatedGithubCommit, RelatedGithubPullRequest } from '@/libs/activity-types';
+
 interface MilestoneDetailPageWrapperProps {
-  activity: any; // Replace 'any' with actual Activity type
-  milestone: any; // Replace 'any' with actual Milestone type
+  activity: Activity;
+  milestone: Milestone;
 }
 
 export const MilestoneDetailPageWrapper: React.FC<MilestoneDetailPageWrapperProps> = ({ activity, milestone }) => {
@@ -58,7 +60,7 @@ export const MilestoneDetailPageWrapper: React.FC<MilestoneDetailPageWrapperProp
             <section className={`lg:col-span-1 p-6 bg-[var(--background)]/50 ${theme === 'newspaper' ? 'newspaper-border ornate-corner' : 'border-2 border-[var(--color-primary-dark)]'}`}>
               <h2 className="font-playfair font-black text-2xl sm:text-3xl text-[var(--foreground)] mb-6">Related Issues</h2>
               <div className="space-y-4">
-                {milestone.relatedGithubIssues.map((issue: any, index: number) => (
+                {milestone.relatedGithubIssues.map((issue: RelatedGithubIssue, index: number) => (
                   <div key={index} className="border-b border-[var(--color-primary-light)] pb-4 last:border-b-0 last:pb-0">
                     <p className="text-sm text-[var(--foreground)]">Issue #{issue.issueNumber} - {issue.date}</p>
                     <h3 className="font-playfair font-bold text-lg text-[var(--foreground)]">{issue.title}</h3>
@@ -73,7 +75,7 @@ export const MilestoneDetailPageWrapper: React.FC<MilestoneDetailPageWrapperProp
             <section className={`lg:col-span-1 p-6 bg-[var(--background)]/50 ${theme === 'newspaper' ? 'newspaper-border ornate-corner' : 'border-2 border-[var(--color-primary-dark)]'}`}>
               <h2 className="font-playfair font-black text-2xl sm:text-3xl text-[var(--foreground)] mb-6">Related Commits</h2>
               <div className="space-y-4">
-                {milestone.relatedGithubCommits.map((commit: any, index: number) => (
+                {milestone.relatedGithubCommits.map((commit: RelatedGithubCommit, index: number) => (
                   <div key={index} className="border-b border-[var(--color-primary-light)] pb-4 last:border-b-0 last:pb-0">
                     <p className="text-sm text-[var(--foreground)]">{commit.date}</p>
                     <h3 className="font-playfair font-bold text-lg text-[var(--foreground)]">{commit.repo}</h3>
@@ -88,7 +90,7 @@ export const MilestoneDetailPageWrapper: React.FC<MilestoneDetailPageWrapperProp
             <section className={`lg:col-span-1 p-6 bg-[var(--background)]/50 ${theme === 'newspaper' ? 'newspaper-border ornate-corner' : 'border-2 border-[var(--color-primary-dark)]'}`}>
               <h2 className="font-playfair font-black text-2xl sm:text-3xl text-[var(--foreground)] mb-6">Related Pull Requests</h2>
               <div className="space-y-4">
-                {milestone.relatedGithubPullRequests.map((pr: any, index: number) => (
+                {milestone.relatedGithubPullRequests.map((pr: RelatedGithubPullRequest, index: number) => (
                   <div key={index} className="border-b border-[var(--color-primary-light)] pb-4 last:border-b-0 last:pb-0">
                     <p className="text-sm text-[var(--foreground)]">PR #{pr.prNumber} - {pr.date}</p>
                     <h3 className="font-playfair font-bold text-lg text-[var(--foreground)]">{pr.repo}</h3>

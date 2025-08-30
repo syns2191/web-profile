@@ -9,9 +9,10 @@ import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { useTheme } from './theme-provider';
 import { ThemeSwitcher } from './theme-switcher';
+import { Activity } from '@/libs/mock-activities';
 
 interface ActivityPageWrapperProps {
-  activity: any; // Replace 'any' with actual Activity type
+  activity: Activity;
 }
 
 export const ActivityPageWrapper: React.FC<ActivityPageWrapperProps> = ({ activity }) => {
@@ -59,7 +60,7 @@ export const ActivityPageWrapper: React.FC<ActivityPageWrapperProps> = ({ activi
                     )}
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {activity.techStack.map((tech: any) => (
+                    {activity.techStack.map((tech) => (
                       <ChipStack key={tech.name} name={tech.name} icon={tech.icon} />
                     ))}
                   </div>
@@ -72,7 +73,7 @@ export const ActivityPageWrapper: React.FC<ActivityPageWrapperProps> = ({ activi
             <section className="mt-12">
               <h2 className="font-playfair font-black text-2xl sm:text-3xl text-[var(--foreground)] mb-6">Activity Timeline</h2>
               <div className="relative border-l-2 border-[var(--color-primary-light)] pl-6">
-                {activity.timeline.map((item: any, index: number) => (
+                {activity.timeline.map((item, index: number) => (
                   <div key={index} className="mb-8 flex items-start">
                     <div className="absolute w-4 h-4 bg-[var(--color-primary-dark)] rounded-full -left-2 top-1.5 border-2 border-[var(--background)]"></div>
                     <Link href={`/activity/${activity.slug}/milestone/${item.slug}`} className="flex-1 cursor-pointer hover:bg-[var(--color-primary-light)] p-2 rounded-md transition-colors duration-200">
@@ -92,7 +93,7 @@ export const ActivityPageWrapper: React.FC<ActivityPageWrapperProps> = ({ activi
             <section className={`p-6 bg-[var(--background)]/50 ${theme === 'newspaper' ? 'newspaper-border ornate-corner' : 'border-2 border-[var(--color-primary-dark)]'}`}>
               <h2 className="font-playfair font-black text-2xl sm:text-3xl text-[var(--foreground)] mb-6">GitHub Activity</h2>
               <div className="space-y-4">
-                {activity.githubActivities.map((ghActivity: any, index: number) => (
+                {activity.githubActivities.map((ghActivity, index: number) => (
                   <div key={index} className="border-b border-[var(--color-primary-light)] pb-4 last:border-b-0 last:pb-0">
                     <p className="text-sm text-[var(--foreground)]">{ghActivity.date}</p>
                     <h3 className="font-playfair font-bold text-lg text-[var(--foreground)]">{ghActivity.type}: {ghActivity.repo}</h3>
@@ -107,7 +108,7 @@ export const ActivityPageWrapper: React.FC<ActivityPageWrapperProps> = ({ activi
             <section className={`p-6 bg-[var(--background)]/50 ${theme === 'newspaper' ? 'newspaper-border ornate-corner' : 'border-2 border-[var(--color-primary-dark)]'} mt-8`}>
               <h2 className="font-playfair font-black text-2xl sm:text-3xl text-[var(--foreground)] mb-6">GitHub Issues</h2>
               <div className="space-y-4">
-                {activity.githubIssues.map((issue: any, index: any) => (
+                {activity.githubIssues.map((issue, index: number) => (
                   <div key={index} className="border-b border-[var(--color-primary-light)] pb-4 last:border-b-0 last:pb-0">
                     <p className="text-sm text-[var(--foreground)]">Issue #{issue.issueNumber} - {issue.date}</p>
                     <h3 className="font-playfair font-bold text-lg text-[var(--foreground)]">{issue.title}</h3>

@@ -23,11 +23,13 @@ import TaskCardDetail from '@/components/task-card-detail';
 import { useTheme } from '@/components/theme-provider';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 
+
+type StatusTask = 'todo' | 'in-progress' | 'done';
 type Task = {
   id: string;
   title: string;
   description: string;
-  status: 'todo' | 'in-progress' | 'done';
+  status: StatusTask
 };
 
 type Column = {
@@ -54,8 +56,8 @@ const initialColumns: Record<string, Column> = {
   },
 };
 
-const initialTasks: any = {};
-[...mockTasks.todo, ...mockTasks['in-progress'], ...mockTasks.done].forEach(task => {
+const initialTasks: Record<string, Task> = {};
+[...mockTasks.todo, ...mockTasks['in-progress'], ...mockTasks.done].forEach((task: Task) => {
   initialTasks[task.id] = task;
 });
 
@@ -255,7 +257,7 @@ const BoardPage = () => {
         <footer className="px-6 sm:px-12 py-6 border-t border-[var(--color-primary-dark)] text-center text-sm text-[var(--foreground)] relative">
           <div className="flex item-center justify-center"><ThemeSwitcher /></div>
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[var(--color-primary-dark)] to-transparent opacity-20"></div>
-          <p className="font-playfair italic">"All the Forum's News That's Fit to Print"</p>
+          <p className="font-playfair italic">{`All the Forum\'s News That\'s Fit to Print`}</p>
           <div className="mt-2 flex justify-center items-center gap-4">
             <span>Copyright © MMXXIV</span>
             <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary-light)]"></div>

@@ -5,13 +5,13 @@ import { ActivityPageWrapper } from '@/components/activity-page-wrapper';
 import { SectionTransition } from '@/components/section-transition';
 
 interface ActivityDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-const ActivityDetailPage = ({ params }: ActivityDetailPageProps) => {
-  const { slug } = params;
+const ActivityDetailPage = async ({ params }: ActivityDetailPageProps) => {
+  const { slug } = await params;
   const activity = mockActivities.find((act) => act.slug === slug);
 
   if (!activity) {

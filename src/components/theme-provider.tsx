@@ -12,7 +12,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setThemeState] = useState<string>('default'); // Default theme
+  const [theme, setThemeState] = useState<string>('solarized-osaka'); // Default theme
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       setThemeState(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
     } else {
-      document.documentElement.setAttribute('data-theme', 'default');
+      document.documentElement.setAttribute('data-theme', 'solarized-osaka');
     }
 
     // Initialize dark mode from localStorage or system preference
