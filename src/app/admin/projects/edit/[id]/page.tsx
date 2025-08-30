@@ -51,7 +51,6 @@ export default function EditProjectPage({ params }: any) {
         setFormName(project.projectTitle);
         setFormDescription(project.projectShortDescription);
         const selectedTechs = project.projectTeachStack.map((item) => item._id);
-        console.log('selectedTechIds', selectedTechIds);
         setSelectedTechIds(selectedTechs);
 
         // Fetch Available Technologies

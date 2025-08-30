@@ -5,14 +5,11 @@ import { notFound } from 'next/navigation';
 import { MilestoneDetailPageWrapper } from '@/components/milestone-detail-page-wrapper';
 
 interface MilestoneDetailPageProps {
-  params: {
-    slug: string;
-    milestoneSlug: string;
-  };
+  params:  Promise<{ slug: string; milestoneSlug: string }>
 }
 
-const MilestoneDetailPage = ({ params }: MilestoneDetailPageProps) => {
-  const { slug, milestoneSlug } = params;
+const MilestoneDetailPage = async ({ params }: MilestoneDetailPageProps) => {
+  const { slug, milestoneSlug } = await params;
 
   const activity = mockActivities.find((act) => act.slug === slug);
 
@@ -32,5 +29,6 @@ const MilestoneDetailPage = ({ params }: MilestoneDetailPageProps) => {
     </SectionTransition>
   );
 };
+
 
 export default MilestoneDetailPage;

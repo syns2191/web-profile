@@ -1,8 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
+    domains: [
+      "camo.githubusercontent.com",
+      "via.placeholder.com",
+      "lh3.googleusercontent.com",
+      "ghchart.rshah.org",
+      "syns.is3.cloudhost.id",
+      "profile.sutralian.dev"
+    ],
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'profile.sutralian.dev',
+        port: '',
+        pathname: '/**'
+      },
       {
         protocol: 'https',
         hostname: 'via.placeholder.com',

@@ -5,7 +5,6 @@ import AdminLayout from '@/components/admin-layout';
 import apiClient from '@/libs/api-client';
 import { io, Socket } from 'socket.io-client';
 import { config } from '@/config/app.config';
-import { read } from 'fs';
 
 interface Message {
   _id?: string;
@@ -41,7 +40,6 @@ const ChatConversationsPage = () => {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [conversationMessages, setConversationMessages] = useState<conversationMessages | null>(null)
   const [adminProfileId, setAdminProfileId] = useState<string | null>(null);
-  const conversationsRef = useRef(conversations);
 
   const getConversation = async () => {
     const response = await apiClient.get(`/api/chat/conversations/${'68a09522a15fa940052244c3'}`);
@@ -270,7 +268,7 @@ const ChatConversationsPage = () => {
                   placeholder="Type a message..."
                   value={messageInput}
                   onChange={(e) => setMessageInput(e.target.value)}
-                  onKeyPress={(e) => {
+                  onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleSendMessage();
                     }

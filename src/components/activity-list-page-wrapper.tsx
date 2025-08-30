@@ -60,7 +60,7 @@ export const ActivityListPageWrapper = () => {
                       <span>{mockActivities[0].replies}</span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {mockActivities[0].techStack.map((tech: any) => (
+                      {mockActivities[0].techStack.map((tech) => (
                         <ChipStack key={tech.name} name={tech.name} icon={tech.icon} />
                       ))}
                     </div>
@@ -88,7 +88,7 @@ export const ActivityListPageWrapper = () => {
                       <span>{activity.hoursPast}</span>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {activity.techStack.map((tech: any) => (
+                      {activity.techStack.map((tech) => (
                         <ChipStack key={tech.name} name={tech.name} icon={tech.icon} />
                       ))}
                     </div>

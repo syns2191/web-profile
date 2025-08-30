@@ -1,4 +1,101 @@
-export const mockActivities = [
+// --- Primitives / enums ---
+type GitHubIssueStatus = "Open" | "Closed";
+type GitHubActivityType = "Commit" | "Pull Request" | "Issue";
+
+// If you want to keep icons constrained to those you actually use:
+type TechIcon =
+  | "react"
+  | "nodejs"
+  | "mongodb"
+  | "nextjs"
+  | "tailwindcss"
+  | "angular"
+  | "typescript"
+  | "postgresql";
+
+// Dates are ISO-like strings in your data (YYYY-MM-DD)
+type ISODateString = `${number}-${number}-${number}`;
+
+// --- Shared small objects ---
+interface TechStackItem {
+  name: string;
+  icon: TechIcon; // or just `string` if you want it open-ended
+}
+
+interface RelatedGithubIssue {
+  title: string;
+  status: GitHubIssueStatus;
+  issueNumber: number;
+  date: ISODateString;
+}
+
+interface RelatedGithubCommit {
+  repo: string;
+  description: string;
+  date: ISODateString;
+}
+
+interface RelatedGithubPullRequest {
+  repo: string;
+  description: string;
+  prNumber: number;
+  date: ISODateString;
+}
+
+// --- Activity timeline ---
+interface TimelineItem {
+  slug: string;
+  date: ISODateString;
+  title: string;
+  description: string;
+  fullContent: string;
+  relatedGithubIssues: RelatedGithubIssue[];
+  relatedGithubCommits: RelatedGithubCommit[];
+  relatedGithubPullRequests: RelatedGithubPullRequest[];
+}
+
+// --- Activity-level GitHub streams ---
+interface GithubActivity {
+  type: GitHubActivityType;
+  repo: string;
+  description: string;
+  date: ISODateString;
+}
+
+interface GithubIssueSummary {
+  title: string;
+  status: GitHubIssueStatus;
+  issueNumber: number;
+  date: ISODateString;
+}
+
+// --- Main Activity shape ---
+export interface Activity {
+  slug: string;
+  title: string;
+  author: string;
+
+  // Your data uses formatted text like "II Hours Past" / "XLII Replies".
+  // Keep as string, or tighten later with template literals if you want.
+  hoursPast: string;
+  replies: string;
+
+  progress: number; // 0..100 (you can enforce at runtime if needed)
+  techStack: TechStackItem[];
+  summary: string;
+  fullContent: string;
+
+  timeline: TimelineItem[];
+
+  githubActivities: GithubActivity[];
+  githubIssues: GithubIssueSummary[];
+}
+
+// If you want the array itself typed:
+export type Activities = Activity[];
+
+
+export const mockActivities: Activities = [
   {
     slug: 'art-of-modern-conversation',
     title: 'The Art of Modern Conversation',
